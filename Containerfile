@@ -27,7 +27,7 @@ FROM ghcr.io/ublue-os/bluefin-dx:latest
 # add empty nix folder for nix installation
 RUN mkdir /nix
 
- install cosmic DE
+# install cosmic DE
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/log \
