@@ -3,7 +3,7 @@ FROM scratch AS ctx
 COPY build_files /
 
 # Base Image
-FROM ghcr.io/ublue-os/bazzite:stable
+FROM ghcr.io/ublue-os/bluefin-dx:latest
 
 ## Other possible base images include:
 # FROM ghcr.io/ublue-os/bazzite:latest
@@ -17,6 +17,22 @@ FROM ghcr.io/ublue-os/bazzite:stable
 ### MODIFICATIONS
 ## make modifications desired in your image and install packages by modifying the build.sh script
 ## the following RUN directive does all the things required to run "build.sh" as recommended.
+
+# TODO: add just commands for postprocessing which should:
+# - install system flatpaks
+# - install added flatpaks
+# - install nix determinate
+# TODO: this should insert itself as a just file in /user/share/ublue-os/just/* with an import added to the justfile, just append it
+
+# add empty nix folder for nix installation
+RUN mkdir /nix
+
+ install cosmic DE
+RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=tmpfs,dst=/tmp \
+    /ctx/build_cosmic.sh
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
