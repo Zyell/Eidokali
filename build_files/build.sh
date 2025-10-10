@@ -3,6 +3,8 @@
 set -ouex pipefail
 
 ### Install packages
+mkdir temp_apps
+cd temp_apps
 
 # install protonmail bridge
 wget https://proton.me/download/bridge/protonmail-bridge-3.21.2-1.x86_64.rpm
@@ -27,5 +29,14 @@ dnf5 -y install ProtonPass.rpm
 wget https://proton.me/download/mail/linux/ProtonMail-desktop-beta.rpm
 dnf5 -y install ProtonMail-desktop-beta.rpm
 
+cd ..
+rm -rf ./temp_apps
+
+# install pop shell for tiling
+dnf5 -y install gnome-shell-extension-pop-shell
+
 # clean it all up
 dnf5 clean all
+
+# Adding reference to eidokali user managed just recipes
+echo "import? \"~/.config/just/eidokali.just\"" >>/usr/share/ublue-os/justfile

@@ -8,7 +8,7 @@ set -ouex pipefail
 
 # install cosmic de
 dnf5 copr enable -y ryanabx/cosmic-epoch
-dnf5 -y install @cosmic-desktop @cosmic-desktop-apps
+dnf5 -y install @cosmic-desktop
 
 # clean it all up
 dnf5 clean all
