@@ -1,5 +1,6 @@
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/amyos)](https://artifacthub.io/packages/container/amyos/amyos)
-[![Build Eidokali](https://github.com/Zyell/Eidokali/actions/workflows/build.yml/badge.svg)](https://github.com/astrovm/amyos/actions/workflows/build.yml)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/eidokali)](https://artifacthub.io/packages/search?repo=eidokali)
+[![Build Eidokali](https://github.com/Zyell/Eidokali/actions/workflows/build.yml/badge.svg)](https://github.com/Zyell/Eidokali/actions/workflows/build.yml)
+
 
 <div style="text-align: center;">
   <picture>
