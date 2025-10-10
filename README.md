@@ -2,7 +2,7 @@
 [![Build Eidokali](https://github.com/Zyell/Eidokali/actions/workflows/build.yml/badge.svg)](https://github.com/Zyell/Eidokali/actions/workflows/build.yml)
 
 
-<div style="text-align: center;">
+<div style="text-align: center;" align="center">
   <picture>
     <img alt="Eidokali Logo" src="./assets/kali.png" width="200">
   </picture>
@@ -68,7 +68,7 @@ This project builds upon [Universal Blue](https://universal-blue.org/) and follo
 
 ## 💝 Dedication
 
-<div style="text-align: center;">
+<div style="text-align: center;" align="center">
 
 **🌈✨ In Loving Memory of Kali ✨🌈**
 
