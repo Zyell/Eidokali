@@ -51,7 +51,7 @@ For a fresh installation, install the stable or latest version of the [Bluefin I
 From an existing Fedora Atomic / Universal Blue installation, switch to the Eidokali image:
 
 ```bash
-sudo bootc switch --enforce-container-sigpolicy ghcr.io/Zyell/Eidokali:latest
+sudo bootc switch --enforce-container-sigpolicy ghcr.io/zyell/eidokali:latest
 ```
 
 ## 🛠️ Usage
