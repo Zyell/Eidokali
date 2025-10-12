@@ -32,11 +32,33 @@ dnf5 -y install ProtonMail-desktop-beta.rpm
 cd ..
 rm -rf ./temp_apps
 
+# migrate over better proton icons and fix the application listing in cosmic for all proton apps
+cp -a proton_icons/. /usr/share/icons/hicolor/scalable/apps/
+
+# remove the proton icons we don't want
+rm /usr/share/icons/hicolor/128x128/apps/proton-authenticator.png
+rm /usr/share/icons/hicolor/256x256@2/apps/proton-authenticator.png
+rm /usr/share/icons/hicolor/32x32/apps/proton-authenticator.png
+
+# update icon cache
+gtk-update-icon-cache -f /usr/share/icons/hicolor
+
 # install pop shell for tiling
 dnf5 -y install gnome-shell-extension-pop-shell
 
 # clean it all up
 dnf5 clean all
+
+# Clean temporary files
+rm -rf /tmp/*
+
+# Clean /var directory while preserving essential files
+find /var/* -maxdepth 0 -type d \! -name cache -exec rm -fr {} \;
+find /var/cache/* -maxdepth 0 -type d \! -name libdnf5 \! -name rpm-ostree -exec rm -fr {} \;
+
+# Restore and setup directories
+mkdir -p /var/tmp
+chmod -R 1777 /var/tmp
 
 # Adding reference to eidokali user managed just recipes
 echo "import? \"~/.config/just/eidokali.just\"" >>/usr/share/ublue-os/justfile
