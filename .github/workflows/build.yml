@@ -117,7 +117,7 @@ jobs:
             .
           
           echo "✅ Successfully built image localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
-          env:
+        env:
           DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
 
       # Rechunk is a script that we use on Universal Blue to make sure there isnt a single huge layer when your image gets published.
