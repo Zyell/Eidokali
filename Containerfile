@@ -13,20 +13,13 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/log \
     --mount=type=tmpfs,dst=/tmp \
-    /ctx/build_cosmic.sh
-
-# let's copy in our icon overrides
-Run mkdir /proton_icons
-COPY build_files/proton_icons /proton_icons
+    /ctx/build_cosmic.sh && ostree container commit
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/log \
     --mount=type=tmpfs,dst=/tmp \
-    /ctx/build.sh
-
-# cleanout the icon overrides
-RUN rm -rf /proton_icons
+    /ctx/build.sh && ostree container commit
     
 ### LINTING
 ## Verify final image and contents are correct.

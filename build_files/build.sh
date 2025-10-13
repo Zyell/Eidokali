@@ -140,7 +140,7 @@ cd ..
 rm -rf ./temp_apps
 
 # migrate over better proton icons and fix the application listing in cosmic for all proton apps
-cp -a proton_icons/. /usr/share/icons/hicolor/scalable/apps/
+cp -a /ctx/proton_icons/. /usr/share/icons/hicolor/scalable/apps/
 
 # remove the proton icons we don't want
 rm /usr/share/icons/hicolor/128x128/apps/proton-authenticator.png
