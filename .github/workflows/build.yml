@@ -108,16 +108,17 @@ jobs:
 
       - name: Build Image
         id: build_image
-        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2
-        with:
-          containerfiles: |
-            ./Containerfile
-          # Postfix image name with -custom to make it a little more descriptive
-          # Syntax: https://docs.github.com/en/actions/learn-github-actions/expressions#format
-          image: ${{ env.IMAGE_NAME }}
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
-          oci: false
+        run: |
+          # Build image as root so rechunker (which uses sudo podman) can access it
+          sudo buildah build \
+            --format docker \
+            --tag "localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}" \
+            --file Containerfile \
+            .
+          
+          echo "✅ Successfully built image localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
+          env:
+          DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
 
       # Rechunk is a script that we use on Universal Blue to make sure there isnt a single huge layer when your image gets published.
       # This does not make your image faster to download, just provides better resumability and fixes a few errors.
@@ -125,10 +126,10 @@ jobs:
       # You can enable it by uncommenting the following lines:
       - name: Run Rechunker
         id: rechunk
-        uses: hhd-dev/rechunk@f153348d8100c1f504dec435460a0d7baf11a9d2 # v1.1.1
+        uses: hhd-dev/rechunk@5fbe1d3a639615d2548d83bc888360de6267b1a2 # v1.2.4
         with:
-         rechunk: 'ghcr.io/hhd-dev/rechunk:v1.0.1'
-         ref: "${{ steps.build_image.outputs.image-with-tag }}"
+         rechunk: 'ghcr.io/hhd-dev/rechunk:v1.2.4'
+         ref: "localhost/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
          prev-ref: "${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}"
          skip_compression: true
          version: ${{ env.CENTOS_VERSION }}
