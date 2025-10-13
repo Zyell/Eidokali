@@ -123,19 +123,6 @@ jobs:
         env:
           DEFAULT_TAG: ${{ env.DEFAULT_TAG }}
 
-      - name: Free up space before rechunking
-        id: space_check_clear
-        run: |
-          # Show available space
-          df -h
-
-          # Clean up unnecessary files
-          sudo rm -rf /tmp/* || true
-          sudo apt-get clean || true
-
-          # Show space after cleanup
-          df -h
-
       # Rechunk is a script that we use on Universal Blue to make sure there isnt a single huge layer when your image gets published.
       # This does not make your image faster to download, just provides better resumability and fixes a few errors.
       # Documentation for Rechunk is provided on their github repository at https://github.com/hhd-dev/rechunk
