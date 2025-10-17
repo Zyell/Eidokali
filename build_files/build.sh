@@ -6,35 +6,22 @@ set -ouex pipefail
 mkdir temp_apps
 cd temp_apps
 
-# install latest protonmail bridge
-# Download the RPM, its signature, and the public key
+# download latest protonmail bridge
 BRIDGE_RELEASE=$(curl -s https://api.github.com/repos/ProtonMail/proton-bridge/releases/latest)
 BRIDGE_RPM_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*x86_64.rpm\"" | grep -v "\.sig" | cut -d '"' -f 4)
-BRIDGE_SIG_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*x86_64.rpm.sig\"" | cut -d '"' -f 4)
-BRIDGE_KEY_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*bridge_pubkey.gpg\"" | cut -d '"' -f 4)
-
 wget "$BRIDGE_RPM_URL"
-wget "$BRIDGE_SIG_URL"
-wget "$BRIDGE_KEY_URL"
-
-# Create a temporary GPG home directory
-export GNUPGHOME=$(mktemp -d)
-chmod 700 "$GNUPGHOME"
-
-# Import the public key from the release assets
-gpg --batch --import bridge_pubkey.gpg
-
-# Verify the signature
 BRIDGE_RPM_FILE=$(basename "$BRIDGE_RPM_URL")
-if gpg --verify "${BRIDGE_RPM_FILE}.sig" "$BRIDGE_RPM_FILE" 2>&1 | grep -q "Good signature"; then
+
+# obtain signature
+wget https://proton.me/download/bridge/bridge_pubkey.gpg
+
+# import bridge key and check signature
+rpm --import bridge_pubkey.gpg
+
+if rpm --checksig "$BRIDGE_RPM_FILE" 2>&1 | grep -q "digests signatures OK"; then
     dnf5 -y install "$BRIDGE_RPM_FILE"
-    rm -rf "$GNUPGHOME"
-    unset GNUPGHOME
 else
     echo "GPG signature verification failed for ProtonMail Bridge!"
-    gpg --verify "${BRIDGE_RPM_FILE}.sig" "$BRIDGE_RPM_FILE"
-    rm -rf "$GNUPGHOME"
-    unset GNUPGHOME
     exit 1
 fi
 
