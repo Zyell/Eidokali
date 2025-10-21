@@ -65,13 +65,8 @@ Eidokali inherits all the powerful `just` commands from Bluefin-DX. Run `ujust` 
 >  - Nextcloud - main menu will not open, but settings will open; otherwise, it is fully functional
 >  - Jetbrains Toolbox - the icon does not appear, though the app is fully functional
 >  - Steam - the icon does not appear, though the app is fully functional
->  - Proton VPN - the menu does not change with the state of the application like it does in 
->    GNOME.  If the VPN is connected, the menu should say "Disconnect" and vice versa, but only 
->    ever provides "Quick Connect" regardless of the state of the VPN. 
->* When tiling, you may experience some modal windows not floating via exceptions.  There is no 
->  GUI for adding exceptions like there is in the GNOME popos tiling extension.  You must 
->  manually add exceptions to `~/.config/cosmic/com.system76.CosmicSettings.
->  WindowRules/v1/tiling_exception_custom` like the following:
+>  - Proton VPN - the menu does not change with the state of the application like it does in GNOME.  If the VPN is connected, the menu should say "Disconnect" and vice versa, but only ever provides "Quick Connect" regardless of the state of the VPN. 
+>* When tiling, you may experience some modal windows not floating via exceptions.  There is no GUI for adding exceptions like there is in the GNOME popos tiling extension.  You must manually add exceptions to `~/.config/cosmic/com.system76.CosmicSettings.  WindowRules/v1/tiling_exception_custom` like the following:
 >  ```text
 >  [
 >    //don't float proton vpn
@@ -82,25 +77,13 @@ Eidokali inherits all the powerful `just` commands from Bluefin-DX. Run `ujust` 
 >    ),
 >  ]
 >  ```
->* If you are using a fingerprint reader, it can only be setup in GNOME.  The cosmic-greeter 
->  respects the fingerprint timeout, but it will not re-prompt upon screen unlock like gnome does.
->  If you enter an invalid password, it will reprompt you for the fingerprint. This is a known 
->  issue with cosmic-greeter.  The fingerprint reader works correctly in all other parts of the 
->  system.
->* Jetbrains apps like RustRover or Pycharm do not behave properly when running as xwayland apps. 
->  If you open a second instance of the app, it will not have a window control bar at the top 
->  (minimize, maximize, or close).  If you set them to run as wayland apps, they will work 
->  correctly.
->* There are many known gaming issues.  Your mileage may vary, but many steam games will not 
->  launch or run properly in cosmic at this time.
+>* If you are using a fingerprint reader, it can only be setup in GNOME.  The cosmic-greeter respects the fingerprint timeout, but it will not re-prompt upon screen unlock like gnome does.  If you enter an invalid password, it will reprompt you for the fingerprint. This is a known issue with cosmic-greeter.  The fingerprint reader works correctly in all other parts of the system.
+>* Jetbrains apps like RustRover or Pycharm do not behave properly when running as xwayland apps. If you open a second instance of the app, it will not have a window control bar at the top (minimize, maximize, or close).  If you set them to run as wayland apps, they will work correctly.
+>* There are many known gaming issues.  Your mileage may vary, but many steam games will not launch or run properly in cosmic at this time.
 >
 >#### GNOME
->* If you try to use the cosmic greeter for login and disable gdm, you will be unable to lock the 
->  screen in GNOME.
->* If you are using tiling with the popos gnome extension and you have multiple workspaces and 
->  monitors, switching between workspaces will be glitchy.  Oftentimes the cursor will jump from 
->  one monitor to another when you switch workspaces.  This issue is not present with tiling in 
->  cosmic (the tiling is extremely nice and virtually glitch-free on cosmic).
+>* If you try to use the cosmic greeter for login and disable gdm, you will be unable to lock the screen in GNOME.
+>* If you are using tiling with the popos gnome extension and you have multiple workspaces and monitors, switching between workspaces will be glitchy.  Oftentimes the cursor will jump from one monitor to another when you switch workspaces.  This issue is not present with tiling in cosmic (the tiling is extremely nice and virtually glitch-free on cosmic).
 
 ## 🤝 Contributing
 
