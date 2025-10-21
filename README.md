@@ -57,15 +57,17 @@ sudo bootc switch --enforce-container-sigpolicy ghcr.io/zyell/eidokali:latest
 ## 🛠️ Usage
 
 Eidokali inherits all the powerful `just` commands from Bluefin-DX. Run `ujust` in your terminal to see available recipes for system management, updates, and customization.
+
 > [!WARNING]
 > ### Known Issues
 >
->#### Cosmic
->* **System Tray Issues**
->  - Nextcloud - main menu will not open, but settings will open; otherwise, it is fully functional
->  - Jetbrains Toolbox - the icon does not appear, though the app is fully functional
->  - Steam - the icon does not appear, though the app is fully functional
->  - Proton VPN - the menu does not change with the state of the application like it does in GNOME.  If the VPN is connected, the menu should say "Disconnect" and vice versa, but only ever provides "Quick Connect" regardless of the state of the VPN. 
+> #### Cosmic
+>
+> * **System Tray Issues**
+>    - Nextcloud - main menu will not open, but settings will open; otherwise, it is fully functional
+>    - Jetbrains Toolbox - the icon does not appear, though the app is fully functional
+>    - Steam - the icon does not appear, though the app is fully functional
+>    - Proton VPN - the menu does not change with the state of the application like it does in GNOME.  If the VPN is connected, the menu should say "Disconnect" and vice versa, but only ever provides "Quick Connect" regardless of the state of the VPN.
 >* When tiling, you may experience some modal windows not floating via exceptions.  There is no GUI for adding exceptions like there is in the GNOME popos tiling extension.  You must manually add exceptions to `~/.config/cosmic/com.system76.CosmicSettings.  WindowRules/v1/tiling_exception_custom` like the following:
 >  ```text
 >  [
