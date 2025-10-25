@@ -80,7 +80,7 @@ Eidokali inherits all the powerful `just` commands from Bluefin-DX. Run `ujust` 
 >  ]
 >  ```
 >* If you are using a fingerprint reader, it can only be setup in GNOME.  The cosmic-greeter respects the fingerprint timeout, but it will not re-prompt upon screen unlock like gnome does.  If you enter an invalid password, it will reprompt you for the fingerprint. This is a known issue with cosmic-greeter.  The fingerprint reader works correctly in all other parts of the system.
->* Jetbrains apps like RustRover or Pycharm do not behave properly when running as xwayland apps. If you open a second instance of the app, it will not have a window control bar at the top (minimize, maximize, or close).  If you set them to run as wayland apps, they will work correctly.
+>* Jetbrains apps like RustRover or Pycharm do not behave properly when running as xwayland apps. If you open a second instance of the app, it will not have a window control bar at the top (minimize, maximize, or close).  If you [set them to run as wayland apps](https://blog.jetbrains.com/platform/2024/07/wayland-support-preview-in-2024-2/#how-to-opt-in), they will work correctly.
 >* There are many known gaming issues.  Your mileage may vary, but many steam games will not launch or run properly in cosmic at this time.
 >* There is no ability to display the battery percentage next to the icon (an ergonomic issue IMHO)
 >
