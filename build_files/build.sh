@@ -48,13 +48,13 @@ PROTONVPN_RELEASE_RPM=$(curl -s "$PROTONVPN_REPO_URL/" | grep -oP 'protonvpn-sta
 wget "${PROTONVPN_REPO_URL}/${PROTONVPN_RELEASE_RPM}"
 
 # Verify the ProtonVPN GPG key fingerprint
-EXPECTED_FINGERPRINT="55AA81128CFFFF46DF140838BC187A13AD10060B"
+EXPECTED_FINGERPRINT="7BB2808996C47DC9EECDA475F7EB64B08C03490D"
 
 dnf5 -y install "./${PROTONVPN_RELEASE_RPM}"
 dnf5 check-update --refresh || true
 
 # Capture the output from dnf5 installation
-dnf5 -y install proton-vpn-gnome-desktop 2>&1 | tee /tmp/protonvpn_install.log
+dnf5 -y install --setopt=tsflags=noscripts proton-vpn-gnome-desktop 2>&1 | tee /tmp/protonvpn_install.log
 
 # Extract all fingerprints from the output (removes spaces and colons)
 IMPORTED_FINGERPRINTS=$(grep -oP 'Fingerprint:\s*\K[A-F0-9:\s]+' /tmp/protonvpn_install.log | tr -d ' :')
