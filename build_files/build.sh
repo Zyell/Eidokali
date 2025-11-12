@@ -90,8 +90,9 @@ dnf5 -y install libappindicator-gtk3 gnome-shell-extension-appindicator gnome-ex
 # install proton authenticator
 wget https://proton.me/download/authenticator/linux/version.json -O authenticator_version.json
 EXPECTED_SHA512=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Sha512CheckSum] | first' authenticator_version.json)
+DOWNLOAD_URL=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Url] | first' authenticator_version.json)
 
-wget https://proton.me/download/authenticator/linux/ProtonAuthenticator.rpm
+wget "$DOWNLOAD_URL" -O ProtonAuthenticator.rpm
 ACTUAL_SHA512=$(sha512sum ProtonAuthenticator.rpm | cut -d ' ' -f 1)
 
 if [ "$ACTUAL_SHA512" != "$EXPECTED_SHA512" ]; then
@@ -106,8 +107,9 @@ dnf5 -y install ProtonAuthenticator.rpm
 # install proton password manager
 wget https://proton.me/download/PassDesktop/linux/x64/version.json -O pass_version.json
 EXPECTED_SHA512=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Sha512CheckSum] | first' pass_version.json)
+DOWNLOAD_URL=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Url] | first' pass_version.json)
 
-wget https://proton.me/download/PassDesktop/linux/x64/ProtonPass.rpm
+wget "$DOWNLOAD_URL" -O ProtonPass.rpm
 ACTUAL_SHA512=$(sha512sum ProtonPass.rpm | cut -d ' ' -f 1)
 
 if [ "$ACTUAL_SHA512" != "$EXPECTED_SHA512" ]; then
@@ -122,8 +124,9 @@ dnf5 -y install ProtonPass.rpm
 # install protonmail client
 wget https://proton.me/download/mail/linux/version.json -O mail_version.json
 EXPECTED_SHA512=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Sha512CheckSum] | first' mail_version.json)
+DOWNLOAD_URL=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Url] | first' mail_version.json)
 
-wget https://proton.me/download/mail/linux/ProtonMail-desktop-beta.rpm
+wget "$DOWNLOAD_URL" -O ProtonMail-desktop-beta.rpm
 ACTUAL_SHA512=$(sha512sum ProtonMail-desktop-beta.rpm | cut -d ' ' -f 1)
 
 if [ "$ACTUAL_SHA512" != "$EXPECTED_SHA512" ]; then
@@ -133,7 +136,6 @@ if [ "$ACTUAL_SHA512" != "$EXPECTED_SHA512" ]; then
     exit 1
 fi
 
-wget https://proton.me/download/mail/linux/ProtonMail-desktop-beta.rpm
 dnf5 -y install ProtonMail-desktop-beta.rpm
 
 cd ..
