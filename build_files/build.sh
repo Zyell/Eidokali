@@ -8,7 +8,7 @@ cd temp_apps
 
 # install latest protonmail bridge
 # Download the RPM, its signature, and the public key
-BRIDGE_RELEASE=$(curl -s https://api.github.com/repos/ProtonMail/proton-bridge/releases/latest)
+BRIDGE_RELEASE=$(curl -s https://api.github.com/repos/ProtonMail/proton-bridge/releases/tags/v3.21.2)
 BRIDGE_RPM_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*x86_64.rpm\"" | grep -v "\.sig" | cut -d '"' -f 4)
 BRIDGE_SIG_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*x86_64.rpm.sig\"" | cut -d '"' -f 4)
 BRIDGE_KEY_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*bridge_pubkey.gpg\"" | cut -d '"' -f 4)
