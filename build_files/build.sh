@@ -2,6 +2,11 @@
 
 set -ouex pipefail
 
+### removing wget failures for trying to persist irrelevant data
+wget() {
+    command wget --no-hsts "$@"
+}
+
 ### Install packages
 mkdir temp_apps
 cd temp_apps
@@ -137,6 +142,23 @@ if [ "$ACTUAL_SHA512" != "$EXPECTED_SHA512" ]; then
 fi
 
 dnf5 -y install ProtonMail-desktop-beta.rpm
+
+# install proton meet client
+wget https://proton.me/download/meet/linux/version.json -O meet_version.json
+EXPECTED_SHA512=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Sha512CheckSum] | first' meet_version.json)
+DOWNLOAD_URL=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Url] | first' meet_version.json)
+
+wget "$DOWNLOAD_URL" -O ProtonMeet-desktop.rpm
+ACTUAL_SHA512=$(sha512sum ProtonMeet-desktop.rpm | cut -d ' ' -f 1)
+
+if [ "$ACTUAL_SHA512" != "$EXPECTED_SHA512" ]; then
+    echo "SHA512 checksum verification failed for ProtonMeet!"
+    echo "Expected: $EXPECTED_SHA512"
+    echo "Got:      $ACTUAL_SHA512"
+    exit 1
+fi
+
+dnf5 -y install ProtonMeet-desktop.rpm
 
 cd ..
 rm -rf ./temp_apps
