@@ -2,20 +2,26 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:best-practices",
+    "helpers:pinGitHubActionDigests"
   ],
 
   "rebaseWhen": "never",
 
   "packageRules": [
     {
-      "automerge": true,
-      "matchUpdateTypes": ["pin", "pinDigest"]
+      "description": "Automerge cryptographic digest and commit SHA pin updates once CI passes",
+      "matchUpdateTypes": ["pin", "pinDigest", "digest"],
+      "automerge": true
     },
     {
-      "enabled": false,
-      "matchUpdateTypes": ["digest", "pinDigest", "pin"],
-      "matchDepTypes": ["container"],
-      "matchFileNames": [".github/workflows/**.yaml", ".github/workflows/**.yml"],
+      "description": "Enforce full commit SHA and digest pinning across all GitHub Actions workflows",
+      "matchManagers": ["github-actions"],
+      "pinDigests": true
     },
+    {
+      "description": "Disable Dockerfile/Containerfile updates and pinning to ensure Containerfile always builds from latest bluefin-dx base image",
+      "matchManagers": ["dockerfile"],
+      "enabled": false
+    }
   ]
 }

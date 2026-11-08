@@ -1,4 +1,28 @@
 cosign.key
 _build_*
-output
+output/
 _build-*/**
+*_chunkah_*
+*_rpm-ostree_*
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*~
+
+# Binaries, packages, and disk images
+*.rpm
+*.img
+*.iso
+*.qcow2
+*.raw
+*.gpg
+*.sig
+
+# Manifests and temporary caches
+*.manifest.json
+output.env
+changelog.md
+
+.junie/

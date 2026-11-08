@@ -48,10 +48,27 @@ Eidokali combines the stability and developer-focused features of Bluefin-DX wit
 
 For a fresh installation, install the stable or latest version of the [Bluefin ISO](https://docs.projectbluefin.io/downloads/)
 
+### Switching to Eidokali
+
 From an existing Fedora Atomic / Universal Blue installation, switch to the Eidokali image:
 
 ```bash
 sudo bootc switch --enforce-container-sigpolicy ghcr.io/zyell/eidokali:latest
+```
+
+### Signature Verification
+
+Eidokali container images are cryptographically signed using [Cosign](https://docs.sigstore.dev/cosign/overview/). You can manually verify image signatures using the repository's `cosign.pub` public key:
+
+```bash
+cosign verify --key cosign.pub ghcr.io/zyell/eidokali:latest
+```
+
+To configure client-side signature enforcement policy prior to switching on fresh installations:
+
+```bash
+sudo mkdir -p /etc/pki/containers
+sudo curl -fsSL https://raw.githubusercontent.com/Zyell/Eidokali/main/cosign.pub -o /etc/pki/containers/eidokali.pub
 ```
 
 ## 🛠️ Usage
@@ -63,10 +80,6 @@ Eidokali inherits all the powerful `just` commands from Bluefin-DX. Run `ujust` 
 >
 > #### Cosmic
 >
-> * **System Tray Issues**
->    - Nextcloud - the icon appears as a gray box and gear, though the app is fully functional
->    - Jetbrains Toolbox - the icon appears as a gray box and gear, though the app is fully functional
->    - Steam - the icon appears as a gray box and gear, though the app is fully functional
 >* When tiling, you may experience some modal windows not floating via exceptions.  There is no GUI for adding exceptions like there is in the GNOME popos tiling extension.  You must manually add exceptions to `~/.config/cosmic/com.system76.CosmicSettings.  WindowRules/v1/tiling_exception_custom` like the following:
 >  ```text
 >  [
@@ -79,7 +92,6 @@ Eidokali inherits all the powerful `just` commands from Bluefin-DX. Run `ujust` 
 >  ]
 >  ```
 >* If you are using a fingerprint reader, it can only be setup in GNOME.  The cosmic-greeter respects the fingerprint timeout, but it will not re-prompt upon screen unlock like gnome does.  If you enter an invalid password, it will reprompt you for the fingerprint. This is a known issue with cosmic-greeter.  The fingerprint reader works correctly in all other parts of the system.
->* Jetbrains apps like RustRover or Pycharm do not behave properly when running as xwayland apps. If you open a second instance of the app, it will not have a window control bar at the top (minimize, maximize, or close).  If you [set them to run as wayland apps](https://blog.jetbrains.com/platform/2024/07/wayland-support-preview-in-2024-2/#how-to-opt-in), they will work correctly.
 >* There are many known gaming issues.  Your mileage may vary, but many steam games will not launch or run properly in cosmic at this time.
 >
 >#### GNOME
