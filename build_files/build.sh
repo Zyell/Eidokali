@@ -30,6 +30,11 @@ wget "$BRIDGE_RPM_URL"
 wget "$BRIDGE_SIG_URL"
 wget "$BRIDGE_KEY_URL"
 
+# Create an isolated temporary GPG home directory in /tmp
+GNUPGHOME=$(mktemp -d)
+export GNUPGHOME
+chmod 700 "$GNUPGHOME"
+
 # Verify the Proton Bridge GPG key fingerprint before trusting
 EXPECTED_BRIDGE_FINGERPRINT="D51E64D3E63EDC3EEF7864CEE2C75D68E6234B07"
 ACTUAL_BRIDGE_FINGERPRINT=$(gpg --with-colons --show-keys bridge_pubkey.gpg | grep '^fpr:' | head -n1 | cut -d: -f10)
@@ -38,14 +43,10 @@ if [ "$ACTUAL_BRIDGE_FINGERPRINT" != "$EXPECTED_BRIDGE_FINGERPRINT" ]; then
     echo "ERROR: Proton Bridge GPG fingerprint mismatch!"
     echo "Expected: $EXPECTED_BRIDGE_FINGERPRINT"
     echo "Got:      $ACTUAL_BRIDGE_FINGERPRINT"
+    rm -rf "$GNUPGHOME"
     exit 1
 fi
 echo "Proton Bridge GPG fingerprint verified successfully: $ACTUAL_BRIDGE_FINGERPRINT"
-
-# Create a temporary GPG home directory
-GNUPGHOME=$(mktemp -d)
-export GNUPGHOME
-chmod 700 "$GNUPGHOME"
 
 # Import the public key from the release assets
 gpg --batch --import bridge_pubkey.gpg
