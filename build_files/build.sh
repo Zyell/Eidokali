@@ -13,17 +13,38 @@ cd temp_apps
 
 # install latest protonmail bridge
 # Download the RPM, its signature, and the public key
-BRIDGE_RELEASE=$(curl -s https://api.github.com/repos/ProtonMail/proton-bridge/releases/latest)
-BRIDGE_RPM_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*x86_64.rpm\"" | grep -v "\.sig" | cut -d '"' -f 4)
-BRIDGE_SIG_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*x86_64.rpm.sig\"" | cut -d '"' -f 4)
-BRIDGE_KEY_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*bridge_pubkey.gpg\"" | cut -d '"' -f 4)
+BRIDGE_RELEASE=$(curl -fsSL --retry 3 --retry-delay 2 https://api.github.com/repos/ProtonMail/proton-bridge/releases/latest) || {
+    echo "ERROR: Failed to fetch Proton Bridge release metadata from GitHub API"
+    exit 1
+}
+BRIDGE_RPM_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*x86_64.rpm\"" | grep -v "\.sig" | cut -d '"' -f 4 || true)
+BRIDGE_SIG_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*x86_64.rpm.sig\"" | cut -d '"' -f 4 || true)
+BRIDGE_KEY_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*bridge_pubkey.gpg\"" | cut -d '"' -f 4 || true)
+
+if [ -z "$BRIDGE_RPM_URL" ] || [ -z "$BRIDGE_SIG_URL" ] || [ -z "$BRIDGE_KEY_URL" ]; then
+    echo "ERROR: Failed to extract Proton Bridge download URLs from release metadata"
+    exit 1
+fi
 
 wget "$BRIDGE_RPM_URL"
 wget "$BRIDGE_SIG_URL"
 wget "$BRIDGE_KEY_URL"
 
+# Verify the Proton Bridge GPG key fingerprint before trusting
+EXPECTED_BRIDGE_FINGERPRINT="D51E64D3E63EDC3EEF7864CEE2C75D68E6234B07"
+ACTUAL_BRIDGE_FINGERPRINT=$(gpg --with-colons --show-keys bridge_pubkey.gpg | grep '^fpr:' | head -n1 | cut -d: -f10)
+
+if [ "$ACTUAL_BRIDGE_FINGERPRINT" != "$EXPECTED_BRIDGE_FINGERPRINT" ]; then
+    echo "ERROR: Proton Bridge GPG fingerprint mismatch!"
+    echo "Expected: $EXPECTED_BRIDGE_FINGERPRINT"
+    echo "Got:      $ACTUAL_BRIDGE_FINGERPRINT"
+    exit 1
+fi
+echo "Proton Bridge GPG fingerprint verified successfully: $ACTUAL_BRIDGE_FINGERPRINT"
+
 # Create a temporary GPG home directory
-export GNUPGHOME=$(mktemp -d)
+GNUPGHOME=$(mktemp -d)
+export GNUPGHOME
 chmod 700 "$GNUPGHOME"
 
 # Import the public key from the release assets
@@ -97,6 +118,11 @@ wget https://proton.me/download/authenticator/linux/version.json -O authenticato
 EXPECTED_SHA512=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Sha512CheckSum] | first' authenticator_version.json)
 DOWNLOAD_URL=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Url] | first' authenticator_version.json)
 
+if [ -z "$DOWNLOAD_URL" ] || [ "$DOWNLOAD_URL" = "null" ] || [ -z "$EXPECTED_SHA512" ] || [ "$EXPECTED_SHA512" = "null" ]; then
+    echo "ERROR: Failed to retrieve Proton Authenticator download URL or SHA512 checksum."
+    exit 1
+fi
+
 wget "$DOWNLOAD_URL" -O ProtonAuthenticator.rpm
 ACTUAL_SHA512=$(sha512sum ProtonAuthenticator.rpm | cut -d ' ' -f 1)
 
@@ -113,6 +139,11 @@ dnf5 -y install ProtonAuthenticator.rpm
 wget https://proton.me/download/PassDesktop/linux/x64/version.json -O pass_version.json
 EXPECTED_SHA512=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Sha512CheckSum] | first' pass_version.json)
 DOWNLOAD_URL=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Url] | first' pass_version.json)
+
+if [ -z "$DOWNLOAD_URL" ] || [ "$DOWNLOAD_URL" = "null" ] || [ -z "$EXPECTED_SHA512" ] || [ "$EXPECTED_SHA512" = "null" ]; then
+    echo "ERROR: Failed to retrieve Proton Pass download URL or SHA512 checksum."
+    exit 1
+fi
 
 wget "$DOWNLOAD_URL" -O ProtonPass.rpm
 ACTUAL_SHA512=$(sha512sum ProtonPass.rpm | cut -d ' ' -f 1)
@@ -131,6 +162,11 @@ wget https://proton.me/download/mail/linux/version.json -O mail_version.json
 EXPECTED_SHA512=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Sha512CheckSum] | first' mail_version.json)
 DOWNLOAD_URL=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Url] | first' mail_version.json)
 
+if [ -z "$DOWNLOAD_URL" ] || [ "$DOWNLOAD_URL" = "null" ] || [ -z "$EXPECTED_SHA512" ] || [ "$EXPECTED_SHA512" = "null" ]; then
+    echo "ERROR: Failed to retrieve ProtonMail download URL or SHA512 checksum."
+    exit 1
+fi
+
 wget "$DOWNLOAD_URL" -O ProtonMail-desktop-beta.rpm
 ACTUAL_SHA512=$(sha512sum ProtonMail-desktop-beta.rpm | cut -d ' ' -f 1)
 
@@ -147,6 +183,11 @@ dnf5 -y install ProtonMail-desktop-beta.rpm
 wget https://proton.me/download/meet/linux/version.json -O meet_version.json
 EXPECTED_SHA512=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Sha512CheckSum] | first' meet_version.json)
 DOWNLOAD_URL=$(jq -r '[.Releases[] | select(.CategoryName == "Stable") | .File[] | select(.Identifier == ".rpm (Fedora/RHEL)") | .Url] | first' meet_version.json)
+
+if [ -z "$DOWNLOAD_URL" ] || [ "$DOWNLOAD_URL" = "null" ] || [ -z "$EXPECTED_SHA512" ] || [ "$EXPECTED_SHA512" = "null" ]; then
+    echo "ERROR: Failed to retrieve Proton Meet download URL or SHA512 checksum."
+    exit 1
+fi
 
 wget "$DOWNLOAD_URL" -O ProtonMeet-desktop.rpm
 ACTUAL_SHA512=$(sha512sum ProtonMeet-desktop.rpm | cut -d ' ' -f 1)
@@ -167,9 +208,9 @@ rm -rf ./temp_apps
 cp -a /ctx/proton_icons/. /usr/share/icons/hicolor/scalable/apps/
 
 # remove the proton icons we don't want
-rm /usr/share/icons/hicolor/128x128/apps/proton-authenticator.png
-rm /usr/share/icons/hicolor/256x256@2/apps/proton-authenticator.png
-rm /usr/share/icons/hicolor/32x32/apps/proton-authenticator.png
+rm -f /usr/share/icons/hicolor/128x128/apps/proton-authenticator.png
+rm -f /usr/share/icons/hicolor/256x256@2/apps/proton-authenticator.png
+rm -f /usr/share/icons/hicolor/32x32/apps/proton-authenticator.png
 
 # update icon cache
 gtk-update-icon-cache -f /usr/share/icons/hicolor
