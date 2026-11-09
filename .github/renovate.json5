@@ -14,9 +14,16 @@
       "automerge": true
     },
     {
-      "description": "Enforce full commit SHA and digest pinning across all GitHub Actions workflows",
+      "description": "Enforce full commit SHA and digest pinning for GitHub Actions",
       "matchManagers": ["github-actions"],
+      "matchDepTypes": ["action"],
       "pinDigests": true
+    },
+    {
+      "description": "Do not attempt digest pinning on action input parameters",
+      "matchManagers": ["github-actions"],
+      "matchDepTypes": ["uses-with"],
+      "pinDigests": false
     },
     {
       "description": "Disable Dockerfile/Containerfile updates and pinning to ensure Containerfile always builds from latest bluefin-dx base image",
