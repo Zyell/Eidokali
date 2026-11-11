@@ -13,10 +13,12 @@ cd temp_apps
 
 # install latest protonmail bridge
 # Download the RPM, its signature, and the public key
+set +x
 BRIDGE_RELEASE=$(curl -fsSL --retry 3 --retry-delay 2 https://api.github.com/repos/ProtonMail/proton-bridge/releases/latest) || {
     echo "ERROR: Failed to fetch Proton Bridge release metadata from GitHub API"
     exit 1
 }
+set -x
 BRIDGE_RPM_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*x86_64.rpm\"" | grep -v "\.sig" | cut -d '"' -f 4 || true)
 BRIDGE_SIG_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*x86_64.rpm.sig\"" | cut -d '"' -f 4 || true)
 BRIDGE_KEY_URL=$(echo "$BRIDGE_RELEASE" | grep "browser_download_url.*bridge_pubkey.gpg\"" | cut -d '"' -f 4 || true)
@@ -70,12 +72,14 @@ FEDORA_VERSION=$(cat /etc/fedora-release | cut -d' ' -f 3)
 PROTONVPN_REPO_URL="https://repo.protonvpn.com/fedora-${FEDORA_VERSION}-stable/protonvpn-stable-release"
 
 # Get the latest protonvpn-stable-release RPM
+set +x
 PROTONVPN_RELEASE_RPM=$(curl -s "$PROTONVPN_REPO_URL/" | grep -oP 'protonvpn-stable-release-[^"<>]+\.noarch\.rpm' | sort -V | tail -1)
+set -x
 
 wget "${PROTONVPN_REPO_URL}/${PROTONVPN_RELEASE_RPM}"
 
 # Verify the ProtonVPN GPG key fingerprint
-EXPECTED_FINGERPRINT="6929133BDE1CE1CFA9EDB286D84176F6844830D4"
+EXPECTED_FINGERPRINT="D3AA11B3B1BFB96DF3CA26A2D59CE240EB3EE0B0"
 
 dnf5 -y install "./${PROTONVPN_RELEASE_RPM}"
 dnf5 check-update --refresh || true
