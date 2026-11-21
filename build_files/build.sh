@@ -206,6 +206,42 @@ fi
 
 dnf5 -y install ProtonMeet-desktop.rpm
 
+# install proton lumo desktop
+# NOTE: If more packages are added in the future that require build/verification tools,
+# we will move to a multi-stage build pattern. For now, temporary installation and
+# removal of minisign within this build stage is accepted.
+MINISIGN_PREINSTALLED=false
+if command -v minisign >/dev/null 2>&1; then
+    MINISIGN_PREINSTALLED=true
+else
+    dnf5 -y install minisign
+fi
+
+wget https://lumo.protondownload.com/desktop/linux/latest.json -O lumo_latest.json
+LUMO_DOWNLOAD_URL=$(jq -r '.platforms["linux-x86_64-rpm"].url // empty' lumo_latest.json)
+LUMO_SIGNATURE_B64=$(jq -r '.platforms["linux-x86_64-rpm"].signature // empty' lumo_latest.json)
+
+if [ -z "$LUMO_DOWNLOAD_URL" ] || [ -z "$LUMO_SIGNATURE_B64" ]; then
+    echo "ERROR: Failed to retrieve Proton Lumo download URL or signature."
+    exit 1
+fi
+
+echo "$LUMO_SIGNATURE_B64" | base64 -d > ProtonLumo-desktop.rpm.minisig
+wget "$LUMO_DOWNLOAD_URL" -O ProtonLumo-desktop.rpm
+
+LUMO_PUBKEY="RWThJY+I2ZDqA0+vVEUTfYz/I98lOTRqJm/1Bhmz35f/WMyNp1+n/f8z"
+if ! minisign -V -P "$LUMO_PUBKEY" -m ProtonLumo-desktop.rpm -x ProtonLumo-desktop.rpm.minisig; then
+    echo "ERROR: Minisign signature verification failed for Proton Lumo!"
+    exit 1
+fi
+
+echo "Proton Lumo signature verified successfully."
+dnf5 -y install ProtonLumo-desktop.rpm
+
+if [ "$MINISIGN_PREINSTALLED" = "false" ]; then
+    dnf5 -y remove minisign
+fi
+
 cd ..
 rm -rf ./temp_apps
 
